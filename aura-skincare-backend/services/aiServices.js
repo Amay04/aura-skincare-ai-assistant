@@ -2,13 +2,20 @@
 const { GoogleGenAI } = require("@google/genai");
 const { executeAriaTool } = require("../tools/ariaTools");
 
-if (!process.env.GEMINI_API_KEY) {
-  throw new Error("GEMINI_API_KEY is missing from the .env file.");
+let aiClient;
+
+function getAI() {
+  if (!aiClient) {
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is missing.");
+    }
+    aiClient = new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY,
+    });
+  }
+  return aiClient;
 }
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-});
 
 const MODEL = "gemini-3.5-flash-lite";
 const MAX_TURNS = 5;
@@ -111,7 +118,7 @@ async function getAriaResponse(message) {
   ];
 
   try {
-    let interaction = await ai.interactions.create({
+        let interaction = await getAI().interactions.create({
       model: MODEL,
       input: history,
       system_instruction: SYSTEM_PROMPT,
@@ -177,7 +184,7 @@ async function getAriaResponse(message) {
 
       // Stateless mode requires the entire history, not just
       // the latest function result or a previous interaction ID.
-      interaction = await ai.interactions.create({
+      interaction = await getAI().interactions.create({
         model: MODEL,
         input: history,
         tools: functionTools,
