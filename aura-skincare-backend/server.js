@@ -40,12 +40,13 @@ app.get("/api/debug", async (req, res) => {
     const result = await getAriaResponse("What is your shipping policy?");
     res.json({ ok: true, result });
   } catch (e) {
-    res.status(500).json({
+       res.status(500).json({
       ok: false,
-      name: e.name,
+      build: "v3",
       message: e.message,
-      status: e.status,
       keyPresent: Boolean(process.env.GEMINI_API_KEY),
+      envNames: Object.keys(process.env),
+    });
     });
   }
 });
