@@ -33,6 +33,22 @@ app.get("/api/health", (req, res) => {
     message: "Aura Skincare backend is running!",
   });
 });
+const { getAriaResponse } = require("./services/aiServices");
+
+app.get("/api/debug", async (req, res) => {
+  try {
+    const result = await getAriaResponse("What is your shipping policy?");
+    res.json({ ok: true, result });
+  } catch (e) {
+    res.status(500).json({
+      ok: false,
+      name: e.name,
+      message: e.message,
+      status: e.status,
+      keyPresent: Boolean(process.env.GEMINI_API_KEY),
+    });
+  }
+});
 
 // Start server
 app.listen(PORT, () => {
