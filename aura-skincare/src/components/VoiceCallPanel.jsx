@@ -1,7 +1,7 @@
 
 import { useRef, useState } from "react";
 
-const API_URL = "http://localhost:5000/api/conversation";
+const API_URL="https://aura-skincare-backend.ameyanaik2002.workers.dev/api/conversation";
 
 function VoiceCallPanel() {
   const [callActive, setCallActive] = useState(false);
